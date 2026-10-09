@@ -10,7 +10,7 @@
     <packaging>pom</packaging>
 
     <properties>
-        <liquibase-linter.version>1.0.0</liquibase-linter.version>
+        <liquibase-linter.version>1.0.1-SNAPSHOT</liquibase-linter.version>
     </properties>
 
     <build>

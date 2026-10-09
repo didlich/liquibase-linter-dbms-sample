@@ -52,6 +52,39 @@ While parsing, Liquibase keeps a changeset only if its `dbms` matches the databa
 `2-postgresql-only` does not match H2, so it is dropped before any rule sees it. `3-postgresql-and-h2` matches
 and is linted. The linter documentation does not mention this.
 
+## With the fix
+
+This branch (`fix`) uses `liquibase-linter-maven-plugin` `1.0.1-SNAPSHOT`, built from the branch
+`lint-changesets-for-every-dbms` of [didlich/liquibase-linter](https://github.com/didlich/liquibase-linter/tree/lint-changesets-for-every-dbms):
+
+```sh
+git clone https://github.com/didlich/liquibase-linter.git
+cd liquibase-linter
+git switch lint-changesets-for-every-dbms
+mvn -pl liquibase-linter-maven-plugin -am install -DskipTests
+```
+
+Then, in this project, `mvn verify` reports all three changesets:
+
+```
+[ERROR] 3 violation(s) found
+[ERROR] src/main/resources/db/changelog/db.changelog-master.xml
+[ERROR] 	changeSet '1-every-dbms'
+[ERROR] 		'has-comment': Change set must have a comment
+[ERROR] 	changeSet '2-postgresql-only'
+[ERROR] 		'has-comment': Change set must have a comment
+[ERROR] 	changeSet '3-postgresql-and-h2'
+[ERROR] 		'has-comment': Change set must have a comment
+```
+
+The fix parses the change log without a database. Liquibase then keeps every changeset, whatever its `dbms`
+(`isDbmsMatch` accepts every changeset when no database is set), so every changeset reaches the rules:
+
+```java
+ChangeLogParser parser = ChangeLogParserFactory.getInstance().getParser(changeLogFile, resourceAccessor);
+DatabaseChangeLog databaseChangeLog = parser.parse(changeLogFile, new ChangeLogParameters(), resourceAccessor);
+```
+
 ## Branches
 
 - `main` — the released plugin, 1.0.0: shows the problem
