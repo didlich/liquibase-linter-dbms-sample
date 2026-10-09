@@ -1,0 +1,6 @@
+{
+  "fail-fast": false,
+  "rules": {
+    "has-comment": true
+  }
+}

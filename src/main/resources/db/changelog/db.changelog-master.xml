@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Three changesets that break has-comment the same way; they differ only in dbms. -->
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.33.xsd">
+
+    <!-- runs on every database -->
+    <changeSet id="1-every-dbms" author="example">
+        <createTable tableName="person">
+            <column name="id" type="bigint"/>
+            <column name="name" type="varchar(100)"/>
+        </createTable>
+    </changeSet>
+
+    <!-- runs on PostgreSQL only -->
+    <changeSet id="2-postgresql-only" author="example" dbms="postgresql">
+        <createIndex tableName="person" indexName="person_name_idx">
+            <column name="name"/>
+        </createIndex>
+    </changeSet>
+
+    <!-- runs on PostgreSQL and H2 -->
+    <changeSet id="3-postgresql-and-h2" author="example" dbms="postgresql,h2">
+        <addColumn tableName="person">
+            <column name="email" type="varchar(200)"/>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>
